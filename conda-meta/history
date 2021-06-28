@@ -1,0 +1,37 @@
+==> 2018-06-06 16:11:16 <==
+# cmd: constructor -v --platform=linux-64 /tmp/constructor-sh-linux-64 --output-dir=/home/nwani/conda/private_conda_recipes
++defaults::python-3.6.5-hc3d631a_2
++defaults::ca-certificates-2018.03.07-0
++defaults::conda-env-2.6.0-h36134e3_1
++defaults::libgcc-ng-7.2.0-hdf63c60_3
++defaults::libstdcxx-ng-7.2.0-hdf63c60_3
++defaults::libffi-3.2.1-hd88cf55_4
++defaults::ncurses-6.1-hf484d3e_0
++defaults::openssl-1.0.2o-h20670df_0
++defaults::tk-8.6.7-hc745277_3
++defaults::xz-5.2.4-h14c3975_4
++defaults::yaml-0.1.7-had09818_2
++defaults::zlib-1.2.11-ha838bed_2
++defaults::libedit-3.1.20170329-h6b74fdf_2
++defaults::readline-7.0-ha6073c6_4
++defaults::sqlite-3.23.1-he433501_0
++defaults::asn1crypto-0.24.0-py36_0
++defaults::certifi-2018.4.16-py36_0
++defaults::chardet-3.0.4-py36h0f667ec_1
++defaults::idna-2.6-py36h82fb2a8_1
++defaults::pycosat-0.6.3-py36h0a5515d_0
++defaults::pycparser-2.18-py36hf9f622e_1
++defaults::pysocks-1.6.8-py36_0
++defaults::ruamel_yaml-0.15.37-py36h14c3975_2
++defaults::six-1.11.0-py36h372c433_1
++defaults::cffi-1.11.5-py36h9745a5d_0
++defaults::setuptools-39.2.0-py36_0
++defaults::cryptography-2.2.2-py36h14c3975_0
++defaults::wheel-0.31.1-py36_0
++defaults::pip-10.0.1-py36_0
++defaults::pyopenssl-18.0.0-py36_0
++defaults::urllib3-1.22-py36hbe7ace6_0
++defaults::requests-2.18.4-py36he2e5f8d_1
++defaults::conda-4.5.4-py36_0
+# update specs: ['conda', 'python=3']
+

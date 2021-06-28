@@ -1,0 +1,9 @@
+
+*.json
+*.bz2
+*.pkl
+*.jar
+*.gz
+*.h
+*.patch
+*.pth
