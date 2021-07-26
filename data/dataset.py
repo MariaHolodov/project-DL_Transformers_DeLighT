@@ -1,3 +1,4 @@
+dataset.py
 import os
 import numpy as np
 import itertools
@@ -203,10 +204,13 @@ class COCO(PairedDataset):
             ids = {}
             ids['train'] = np.load(os.path.join(id_root, 'coco_train_ids.npy'))
             ids['val'] = np.load(os.path.join(id_root, 'coco_dev_ids.npy'))
-            if cut_validation:
-                ids['val'] = ids['val'][:5000]
             ids['test'] = np.load(os.path.join(id_root, 'coco_test_ids.npy'))
-            ids['test'] = ids['test'][:50]
+            if cut_validation:
+                ids['val'] = ids['val'][:200]
+                #print('ids[val] len ' ,len(ids['val']))
+                ids['train'] = ids['train'][:200]
+                ids['test'] = ids['test'][:200]
+
             ids['trainrestval'] = (
                 ids['train'],
                 np.load(os.path.join(id_root, 'coco_restval_ids.npy')))
@@ -235,7 +239,7 @@ class COCO(PairedDataset):
         val_samples = []
         test_samples = []
 
-        for split in ['train', 'val', 'test']: #
+        for split in ['train', 'val', 'test']:
             if isinstance(roots[split]['cap'], tuple):
                 coco_dataset = (pyCOCO(roots[split]['cap'][0]), pyCOCO(roots[split]['cap'][1]))
                 root = roots[split]['img']
@@ -277,4 +281,3 @@ class COCO(PairedDataset):
                     test_samples.append(example)
 
         return train_samples, val_samples, test_samples
-

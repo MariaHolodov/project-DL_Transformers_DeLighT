@@ -1,3 +1,8 @@
+
+import matplotlib
+print(matplotlib.__version__) 
+
+
 import random
 from data import ImageDetectionsField, TextField, RawField
 from data import COCO, DataLoader
@@ -52,7 +57,7 @@ def evaluate_metrics(model, dataloader, text_field):
         for it, (images, caps_gt) in enumerate(iter(dataloader)):
             images = images.to(device)
             with torch.no_grad():
-                out, _ = model.beam_search(images, 20, text_field.vocab.stoi['<eos>'], 5, out_size=1)
+                out, _ = model.beam_search(images, 20, text_field.vocab.stoi['<eos>'], 4, out_size=1)
             caps_gen = text_field.decode(out, join_words=False)
             for i, (gts_i, gen_i) in enumerate(zip(caps_gt, caps_gen)):
                 gen_i = ' '.join([k for k, g in itertools.groupby(gen_i)])
@@ -226,7 +231,8 @@ if __name__ == '__main__':
                 data['epoch'], data['val_loss'], data['best_cider']))
 
     print("Training starts")
-    for e in range(start_epoch, start_epoch + 100):
+    print(len(train_dataset))
+    for e in range(start_epoch, start_epoch +200):
         dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
                                       drop_last=True)
         dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
@@ -255,7 +261,7 @@ if __name__ == '__main__':
         writer.add_scalar('data/val_cider', val_cider, e)
         writer.add_scalar('data/val_bleu1', scores['BLEU'][0], e)
         writer.add_scalar('data/val_bleu4', scores['BLEU'][3], e)
-        writer.add_scalar('data/val_meteor', scores['METEOR'], e)
+        #writer.add_scalar('data/val_meteor', scores['METEOR'], e)
         writer.add_scalar('data/val_rouge', scores['ROUGE'], e)
 
         # Test scores
@@ -264,7 +270,7 @@ if __name__ == '__main__':
         writer.add_scalar('data/test_cider', scores['CIDEr'], e)
         writer.add_scalar('data/test_bleu1', scores['BLEU'][0], e)
         writer.add_scalar('data/test_bleu4', scores['BLEU'][3], e)
-        writer.add_scalar('data/test_meteor', scores['METEOR'], e)
+        #writer.add_scalar('data/test_meteor', scores['METEOR'], e)
         writer.add_scalar('data/test_rouge', scores['ROUGE'], e)
 
         # Prepare for next epoch
