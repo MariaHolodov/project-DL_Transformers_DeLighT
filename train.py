@@ -1,8 +1,3 @@
-
-import matplotlib
-print(matplotlib.__version__) 
-
-
 import random
 from data import ImageDetectionsField, TextField, RawField
 from data import COCO, DataLoader
@@ -20,6 +15,8 @@ import numpy as np
 import itertools
 import multiprocessing
 from shutil import copyfile
+#import matplotlib
+#print(matplotlib.__version__)
 
 random.seed(1234)
 torch.manual_seed(1234)
