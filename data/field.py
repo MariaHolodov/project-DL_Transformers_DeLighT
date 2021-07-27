@@ -13,7 +13,7 @@ from torch.utils.data.dataloader import default_collate
 from .dataset import Dataset
 from .vocab import Vocab
 from .utils import get_tokenizer
-from keras.models import load_model
+#from keras.models import load_model
 import gcsfs
 
 class RawField(object):
