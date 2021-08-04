@@ -69,6 +69,12 @@ def evaluate_metrics(model, dataloader, text_field):
 
 
 def train_xe(model, dataloader, optim, text_field):
+    print('cuda avl: ', torch.cuda.is_available())
+    print('current device: ', torch.cuda.current_device())
+    print('device: ', torch.cuda.device(0))
+    print('device count ', torch.cuda.device_count())
+    print('device name ', torch.cuda.get_device_name(0))
+
     # Training with cross-entropy
     model.train()
     scheduler.step()
