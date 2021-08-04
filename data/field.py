@@ -123,6 +123,8 @@ class ImageDetectionsField(RawField):
             f = h5py.File(self.detections_path, 'r')
 
             precomp_data = f['%d_features' % image_id][()]
+            print(precomp_data.shape)
+            print(vc_f1.shape)
             precomp_data = np.concatenate([precomp_data,vc_f1],axis=1)
 
             if self.sort_by_prob:
