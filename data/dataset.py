@@ -6,12 +6,18 @@ import torch
 from .example import Example
 from .utils import nostdout
 from pycocotools.coco import COCO as pyCOCO
-
+import h5py
+import tqdm
 
 class Dataset(object):
     def __init__(self, examples, fields):
         self.examples = examples
         self.fields = dict(fields)
+        image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
+        f = h5py.File('coco_detections.hdf5', 'r')
+        self.detections_data = {}
+        for image_id in tqdm(image_ids):
+            self.detections_data[image_id] = f['%d_features' % image_id][()]
 
     def collate_fn(self):
         def collate(batch):
