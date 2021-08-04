@@ -82,7 +82,10 @@ def train_xe(model, dataloader, optim, text_field):
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, captions) in enumerate(dataloader):
             detections, captions = detections.to(device), captions.to(device)
+            print('detection size', detections.size())
+            print('captions size', captions.size())
             out = model(detections, captions)
+            print('model is in cuda:', next(model.parameters()).is_cuda)
             optim.zero_grad()
             captions_gt = captions[:, 1:].contiguous()
             out = out[:, :-1].contiguous()
