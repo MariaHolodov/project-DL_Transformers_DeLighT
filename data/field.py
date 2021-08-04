@@ -107,8 +107,10 @@ class ImageDetectionsField(RawField):
 
     def preprocess(self, x, avoid_precomp=False):
         image_id = int(x.split('_')[-1].split('.')[0])
-        print(image_id)
         try:
+            vc_f1 = np.load(os.path.join(self.vc_features,str(image_id) + '.npy'))
+
+            str(image_id)
             # PROJECT_NAME = 'only_coco_data'
             # CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'
             # MODEL_PATH = 'gs://only_coco_data/coco_detections.hdf5'
@@ -121,11 +123,14 @@ class ImageDetectionsField(RawField):
             f = h5py.File(self.detections_path, 'r')
 
             precomp_data = f['%d_features' % image_id][()]
+            precomp_data = np.concatenate([precomp_data,vc_f1],axis=1)
+
             if self.sort_by_prob:
                 precomp_data = precomp_data[np.argsort(np.max(f['%d_cls_prob' % image_id][()], -1))[::-1]]
+
         except KeyError:
             warnings.warn('Could not find detections for %d' % image_id)
-            precomp_data = np.random.rand(10,2048)
+            precomp_data = np.random.rand(10,3072)#2048)
 
         delta = self.max_detections - precomp_data.shape[0]
         if delta > 0:
