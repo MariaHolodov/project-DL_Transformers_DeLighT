@@ -109,7 +109,7 @@ class ImageDetectionsField(RawField):
 
         try:
             PROJECT_NAME = 'only_coco_data'
-            CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json.'
+            CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'
             MODEL_PATH = 'gs://only_coco_data/coco_detections.hdf5'
 
             FS = gcsfs.GCSFileSystem(project=PROJECT_NAME,
