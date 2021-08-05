@@ -275,7 +275,7 @@ if __name__ == '__main__':
 
         # Prepare for next epoch
         best = False
-        if val_cider >= best_cider:
+        if val_cider > best_cider:
             best_cider = val_cider
             patience = 0
             best = True
