@@ -7,7 +7,7 @@ from .example import Example
 from .utils import nostdout
 from pycocotools.coco import COCO as pyCOCO
 import h5py
-import tqdm
+from tqdm import tqdm
 
 
 class Dataset(object):
