@@ -24,7 +24,7 @@ class Dataset(object):
             f = h5py.File(features_root, 'r')
             self.detections_data = {}
             with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-                for image_id in image_ids:
+                for image_id in image_ids[:100]:
                     self.detections_data[image_id] = f['%d_features' % image_id][()]
                     pbar.update()
 
