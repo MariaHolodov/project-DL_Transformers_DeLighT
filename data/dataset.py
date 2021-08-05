@@ -32,6 +32,9 @@ class Dataset(object):
                     proc.start()
                     pbar.update()
 
+                for proc in procs:
+                    proc.join()
+
     def collate_fn(self):
         def collate(batch):
             if len(self.fields) == 1:
