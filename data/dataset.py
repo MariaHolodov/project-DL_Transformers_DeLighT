@@ -57,7 +57,7 @@ class Dataset(object):
         example = self.examples[i]
         data = []
         for field_name, field in self.fields.items():
-            data.append(field.preprocess(getattr(example, field_name)))
+            data.append(field.preprocess(getattr(example, field_name), self.detections_data))
 
         if len(data) == 1:
             data = data[0]

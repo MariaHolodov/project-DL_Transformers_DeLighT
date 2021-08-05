@@ -104,7 +104,7 @@ class ImageDetectionsField(RawField):
 
         super(ImageDetectionsField, self).__init__(preprocessing, postprocessing)
 
-    def preprocess(self, x, avoid_precomp=False):
+    def preprocess(self, x, ids_dict, avoid_precomp=False):
         image_id = int(x.split('_')[-1].split('.')[0])
 
         try:
@@ -117,8 +117,11 @@ class ImageDetectionsField(RawField):
             # with FS.open(MODEL_PATH, 'rb') as tmp_detections_path:
             #     f = h5py.File(tmp_detections_path, 'r')
             #     precomp_data = f['%d_features' % image_id][()]
-            f = h5py.File(self.detections_path, 'r')
-            precomp_data = f['%d_features' % image_id][()]
+            if image_id in ids_dict.keys():
+                precomp_data = ids_dict[image_id]
+            else:
+                f = h5py.File(self.detections_path, 'r')
+                precomp_data = f['%d_features' % image_id][()]
             if self.sort_by_prob:
                 precomp_data = precomp_data[np.argsort(np.max(f['%d_cls_prob' % image_id][()], -1))[::-1]]
         except KeyError:
