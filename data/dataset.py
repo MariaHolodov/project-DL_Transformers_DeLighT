@@ -13,7 +13,7 @@ from multiprocessing import Process
 
 
 class Dataset(object):
-    def __init__(self, examples, fields, features_root):
+    def __init__(self, examples, fields, features_root=None):
         def fetch_from_hdf5(hdf5_file, image_id):
             self.detections_data[image_id] = hdf5_file['%d_features' % image_id][()]
 
@@ -158,7 +158,7 @@ def unique(sequence):
 
 
 class PairedDataset(Dataset):
-    def __init__(self, examples, fields, features_root):
+    def __init__(self, examples, fields, features_root=None):
         assert ('image' in fields)
         assert ('text' in fields)
         super(PairedDataset, self).__init__(examples, fields, features_root)
