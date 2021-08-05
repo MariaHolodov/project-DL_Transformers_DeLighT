@@ -19,8 +19,8 @@ class Dataset(object):
 
         self.examples = examples
         self.fields = dict(fields)
+        self.detections_data = {}
         if features_root is not None:
-            self.detections_data = {}
             image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
             print(image_ids[:10])
             f = h5py.File(features_root, 'r')
