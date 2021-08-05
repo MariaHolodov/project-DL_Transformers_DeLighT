@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     # Create the dataset
     dataset = COCO(image_field=image_field, text_field=text_field, img_root='coco/images/',
-                   featues_root=args.features_path, ann_root=args.annotation_folder, id_root=args.annotation_folder)
+                   features_root=args.features_path, ann_root=args.annotation_folder, id_root=args.annotation_folder)
     train_dataset, val_dataset, test_dataset = dataset.splits
 
     if not os.path.isfile('vocab_%s.pkl' % args.exp_name):
