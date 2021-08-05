@@ -25,7 +25,7 @@ class Dataset(object):
 
         procs = []
         with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-            for image_id in image_ids:
+            for image_id in image_ids[:100]:
                 proc = Process(target=fetch_from_hdf5, args=(f, image_id))
                 procs.append(proc)
                 proc.start()
