@@ -19,17 +19,18 @@ class Dataset(object):
 
         self.examples = examples
         self.fields = dict(fields)
-        self.detections_data = {}
-        image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
-        f = h5py.File(features_root, 'r')
+        if features_root is not None:
+            self.detections_data = {}
+            image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
+            f = h5py.File(features_root, 'r')
 
-        procs = []
-        with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-            for image_id in image_ids[:100]:
-                proc = Process(target=fetch_from_hdf5, args=(f, image_id))
-                procs.append(proc)
-                proc.start()
-                pbar.update()
+            procs = []
+            with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
+                for image_id in image_ids[:100]:
+                    proc = Process(target=fetch_from_hdf5, args=(f, image_id))
+                    procs.append(proc)
+                    proc.start()
+                    pbar.update()
 
     def collate_fn(self):
         def collate(batch):
