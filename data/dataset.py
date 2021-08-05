@@ -22,7 +22,6 @@ class Dataset(object):
         self.detections_data = {}
         if features_root is not None:
             image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
-            print(image_ids[:10])
             f = h5py.File(features_root, 'r')
             with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
                 for image_id in image_ids[:100]:
@@ -68,7 +67,6 @@ class Dataset(object):
     def __getitem__(self, i):
         example = self.examples[i]
         data = []
-        print('type in getitem:', type(self.detections_data))
         for field_name, field in self.fields.items():
             if field_name == 'image':
                 data.append(field.preprocess(getattr(example, field_name), ids_dict=self.detections_data))
