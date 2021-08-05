@@ -256,14 +256,15 @@ class COCO(PairedDataset):
 
         with nostdout():
             self.train_examples, self.val_examples, self.test_examples = self.get_samples(roots, ids)
+        self.features_root = features_root
         examples = self.train_examples + self.val_examples + self.test_examples
-        super(COCO, self).__init__(examples, {'image': image_field, 'text': text_field}, features_root)
+        super(COCO, self).__init__(examples, {'image': image_field, 'text': text_field})
 
     @property
     def splits(self):
-        train_split = PairedDataset(self.train_examples, self.fields)
-        val_split = PairedDataset(self.val_examples, self.fields)
-        test_split = PairedDataset(self.test_examples, self.fields)
+        train_split = PairedDataset(self.train_examples, self.fields, self.features_root)
+        val_split = PairedDataset(self.val_examples, self.fields, self.features_root)
+        test_split = PairedDataset(self.test_examples, self.fields, self.features_root)
         return train_split, val_split, test_split
 
     @classmethod
