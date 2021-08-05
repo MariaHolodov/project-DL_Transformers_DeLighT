@@ -14,19 +14,20 @@ from multiprocessing import Process
 
 class Dataset(object):
     def __init__(self, examples, fields, features_root=None):
-        def fetch_from_hdf5(hdf5_file, image_id):
-            self.detections_data[image_id] = hdf5_file['%d_features' % image_id][()]
+        # def fetch_from_hdf5(hdf5_file, image_id):
+        #     self.detections_data[image_id] = hdf5_file['%d_features' % image_id][()]
 
         self.examples = examples
         self.fields = dict(fields)
+        self.detections_data = {}
         if features_root is not None:
             image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
             f = h5py.File(features_root, 'r')
-            self.detections_data = {}
             with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
                 for image_id in image_ids[:100]:
                     self.detections_data[image_id] = f['%d_features' % image_id][()]
                     pbar.update()
+        print(type(self.detections_data))
             # self.detections_data = {}
             # image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
             # f = h5py.File(features_root, 'r')
