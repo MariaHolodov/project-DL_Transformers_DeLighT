@@ -9,17 +9,26 @@ from pycocotools.coco import COCO as pyCOCO
 import h5py
 from tqdm import tqdm
 
+from multiprocessing import Process
+
 
 class Dataset(object):
     def __init__(self, examples, fields, features_root):
+        def fetch_from_hdf5(hdf5_file, image_id):
+            self.detections_data[image_id] = hdf5_file['%d_features' % image_id][()]
+
         self.examples = examples
         self.fields = dict(fields)
+        self.detections_data = {}
         image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
         f = h5py.File(features_root, 'r')
-        self.detections_data = {}
+
+        procs = []
         with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
             for image_id in image_ids:
-                self.detections_data[image_id] = f['%d_features' % image_id][()]
+                proc = Process(target=fetch_from_hdf5, args=(f, image_id))
+                procs.append(proc)
+                proc.start()
                 pbar.update()
 
     def collate_fn(self):
