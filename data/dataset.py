@@ -27,7 +27,6 @@ class Dataset(object):
                 for image_id in image_ids[:100]:
                     self.detections_data[image_id] = f['%d_features' % image_id][()]
                     pbar.update()
-            print('type detection data', type(self.detections_data))
             # self.detections_data = {}
             # image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
             # f = h5py.File(features_root, 'r')
@@ -68,6 +67,7 @@ class Dataset(object):
     def __getitem__(self, i):
         example = self.examples[i]
         data = []
+
         for field_name, field in self.fields.items():
             data.append(field.preprocess(getattr(example, field_name), self.detections_data))
 
