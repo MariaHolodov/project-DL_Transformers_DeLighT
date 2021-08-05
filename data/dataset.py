@@ -9,6 +9,7 @@ from pycocotools.coco import COCO as pyCOCO
 import h5py
 import tqdm
 
+
 class Dataset(object):
     def __init__(self, examples, fields):
         self.examples = examples
@@ -16,8 +17,9 @@ class Dataset(object):
         image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
         f = h5py.File('coco_detections.hdf5', 'r')
         self.detections_data = {}
-        for image_id in tqdm(image_ids):
-            self.detections_data[image_id] = f['%d_features' % image_id][()]
+        with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
+            for image_id in image_ids:
+                self.detections_data[image_id] = f['%d_features' % image_id][()]
 
     def collate_fn(self):
         def collate(batch):
