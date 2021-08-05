@@ -67,7 +67,7 @@ class Dataset(object):
     def __getitem__(self, i):
         example = self.examples[i]
         data = []
-
+        print('type in getitem:', type(self.detections_data))
         for field_name, field in self.fields.items():
             data.append(field.preprocess(getattr(example, field_name), ids_dict=self.detections_data))
 
