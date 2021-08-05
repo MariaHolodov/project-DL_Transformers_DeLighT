@@ -11,11 +11,11 @@ import tqdm
 
 
 class Dataset(object):
-    def __init__(self, examples, fields):
+    def __init__(self, examples, fields, features_root):
         self.examples = examples
         self.fields = dict(fields)
         image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
-        f = h5py.File('coco_detections.hdf5', 'r')
+        f = h5py.File(features_root, 'r')
         self.detections_data = {}
         with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
             for image_id in image_ids:
@@ -148,10 +148,10 @@ def unique(sequence):
 
 
 class PairedDataset(Dataset):
-    def __init__(self, examples, fields):
+    def __init__(self, examples, fields, features_root):
         assert ('image' in fields)
         assert ('text' in fields)
-        super(PairedDataset, self).__init__(examples, fields)
+        super(PairedDataset, self).__init__(examples, fields, features_root)
         self.image_field = self.fields['image']
         self.text_field = self.fields['text']
 
@@ -187,7 +187,7 @@ class PairedDataset(Dataset):
 
 
 class COCO(PairedDataset):
-    def __init__(self, image_field, text_field, img_root, ann_root, id_root=None, use_restval=False,
+    def __init__(self, image_field, text_field, img_root, features_root, ann_root, id_root=None, use_restval=False,
                  cut_validation=False):
         roots = {}
         roots['train'] = {
@@ -231,7 +231,7 @@ class COCO(PairedDataset):
         with nostdout():
             self.train_examples, self.val_examples, self.test_examples = self.get_samples(roots, ids)
         examples = self.train_examples + self.val_examples + self.test_examples
-        super(COCO, self).__init__(examples, {'image': image_field, 'text': text_field})
+        super(COCO, self).__init__(examples, {'image': image_field, 'text': text_field}, features_root)
 
     @property
     def splits(self):
