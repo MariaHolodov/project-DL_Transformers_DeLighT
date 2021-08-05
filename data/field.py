@@ -106,7 +106,7 @@ class ImageDetectionsField(RawField):
 
     def preprocess(self, x, ids_dict, avoid_precomp=False):
         image_id = int(x.split('_')[-1].split('.')[0])
-
+        print(type(ids_dict))
         try:
             # PROJECT_NAME = 'only_coco_data'
             # CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'
@@ -117,7 +117,7 @@ class ImageDetectionsField(RawField):
             # with FS.open(MODEL_PATH, 'rb') as tmp_detections_path:
             #     f = h5py.File(tmp_detections_path, 'r')
             #     precomp_data = f['%d_features' % image_id][()]
-            if image_id in list(ids_dict.keys()):
+            if image_id in ids_dict.keys():
                 precomp_data = ids_dict[image_id]
             else:
                 f = h5py.File(self.detections_path, 'r')
