@@ -11,6 +11,12 @@
 import os
 import subprocess
 import tempfile
+import nltk
+import string
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem.porter import PorterStemmer
+from nltk import pos_tag
 
 class PTBTokenizer(object):
     """Python wrapper of Stanford PTBTokenizer"""
@@ -37,7 +43,21 @@ class PTBTokenizer(object):
         sentences = '\n'.join([c.replace('\n', ' ') for k, v in corpus.items() for c in v])
 
         #TODO: tokenizer
-        lines = sentences.split('\n')
+        text = "".join([char for char in sentences if char not in string.punctuation])
+        sent_text = nltk.sent_tokenize(text)
+        stop_words = stopwords.words('english')
+        porter = PorterStemmer()
+        new_sentences = []
+
+        for sentence in sent_text:
+            words = word_tokenize(sentence)
+            filtered_words = [word for word in words if word not in stop_words]
+            stemmed = [porter.stem(word) for word in filtered_words]
+            new_sentence = ' '.join(stemmed)
+            new_sentences.append(new_sentence)
+
+        #sentences = '\n'.join(new_sentences)
+        lines = new_sentences#sentences.split('\n')
 
         # create dictionary for tokenized captions
         for k, line in zip(image_id, lines):
