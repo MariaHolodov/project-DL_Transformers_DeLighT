@@ -56,7 +56,10 @@ def evaluate_metrics(model, dataloader, text_field):
             images = images.to(device)
             with torch.no_grad():
                 out, _ = model.beam_search(images, 20, text_field.vocab.stoi['<eos>'], 4, out_size=1)
+                print(out)
+                print(caps_gt)
             caps_gen = text_field.decode(out, join_words=False)
+            print(caps_gen)
             for i, (gts_i, gen_i) in enumerate(zip(caps_gt, caps_gen)):
                 gen_i = ' '.join([k for k, g in itertools.groupby(gen_i)])
                 gen['%d_%d' % (it, i)] = [gen_i, ]
