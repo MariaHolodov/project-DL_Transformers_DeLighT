@@ -9,13 +9,13 @@ from models.containers import Module, ModuleList
 
 
 class MeshedDecoderLayer(Module):
-    def __init__(self, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1, self_att_module=None,
+    def __init__(self, d_model=64, d_middle=[512], d_o=256, d_k=8, d_v=8, h=1, d_ff=128, dropout=.1, self_att_module=None,
                  enc_att_module=None, self_att_module_kwargs=None, enc_att_module_kwargs=None):
         super(MeshedDecoderLayer, self).__init__()
-        self.self_att = MultiHeadAttention(d_model, d_k, d_v, h, dropout, can_be_stateful=True,
+        self.self_att = MultiHeadAttention(d_model, d_middle, d_o, d_k, d_v, h, dropout, can_be_stateful=True,
                                            attention_module=self_att_module,
                                            attention_module_kwargs=self_att_module_kwargs)
-        self.enc_att = MultiHeadAttention(d_model, d_k, d_v, h, dropout, can_be_stateful=False,
+        self.enc_att = MultiHeadAttention(d_model, d_middle, d_o, d_k, d_v, h, dropout, can_be_stateful=False,
                                           attention_module=enc_att_module,
                                           attention_module_kwargs=enc_att_module_kwargs)
         self.pwff = PositionWiseFeedForward(d_model, d_ff, dropout)
@@ -55,14 +55,15 @@ class MeshedDecoderLayer(Module):
 
 
 class MeshedDecoder(Module):
-    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1,
+    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=512, d_middle=[512], d_o=256, d_k=64, d_v=64, h=1, d_ff=128, dropout=.1,
                  self_att_module=None, enc_att_module=None, self_att_module_kwargs=None, enc_att_module_kwargs=None):
+
         super(MeshedDecoder, self).__init__()
         self.d_model = d_model
         self.word_emb = nn.Embedding(vocab_size, d_model, padding_idx=padding_idx)
         self.pos_emb = nn.Embedding.from_pretrained(sinusoid_encoding_table(max_len + 1, d_model, 0), freeze=True)
         self.layers = ModuleList(
-            [MeshedDecoderLayer(d_model, d_k, d_v, h, d_ff, dropout, self_att_module=self_att_module,
+            [MeshedDecoderLayer(d_model, d_middle, d_o, d_k, d_v, h, d_ff, dropout, self_att_module=self_att_module,
                                 enc_att_module=enc_att_module, self_att_module_kwargs=self_att_module_kwargs,
                                 enc_att_module_kwargs=enc_att_module_kwargs) for _ in range(N_dec)])
         self.fc = nn.Linear(d_model, vocab_size, bias=False)
