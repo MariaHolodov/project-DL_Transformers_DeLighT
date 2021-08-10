@@ -129,6 +129,7 @@ class CiderScorer(object):
             for n in range(self.n):
                 # ngram
                 for (ngram,count) in vec_hyp[n].items():
+                    pritn(ngram)
                     # vrama91 : added clipping
                     val[n] += min(vec_hyp[n][ngram], vec_ref[n][ngram]) * vec_ref[n][ngram]
 
@@ -146,8 +147,6 @@ class CiderScorer(object):
             vec, norm, length = counts2vec(test)
             # compute vector for ref captions
             score = np.array([0.0 for _ in range(self.n)])
-            print('score cider')
-            print(score)
             for ref in refs:
                 vec_ref, norm_ref, length_ref = counts2vec(ref)
                 score += sim(vec, vec_ref, norm, norm_ref, length, length_ref)
