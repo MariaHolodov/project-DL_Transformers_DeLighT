@@ -41,9 +41,9 @@ class PTBTokenizer(object):
         tokenized_corpus = {}
         image_id = [k for k, v in list(corpus.items()) for _ in range(len(v))]
         sentences = '\n'.join([c.replace('\n', ' ') for k, v in corpus.items() for c in v])
-        print(sentences)
+
         #TODO: tokenizer
-        text = "".join([char for char in sentences if char not in string.punctuation])
+        text = "".join([char for char in sentences if char not in punctuations])
         sent_text = nltk.sent_tokenize(text)
         stop_words = stopwords.words('english')
         porter = PorterStemmer()
@@ -58,6 +58,7 @@ class PTBTokenizer(object):
 
         #sentences = '\n'.join(new_sentences)
         lines = new_sentences#sentences.split('\n')
+        print(lines)
         # create dictionary for tokenized captions
         for k, line in zip(image_id, lines):
             if not k in tokenized_corpus:
