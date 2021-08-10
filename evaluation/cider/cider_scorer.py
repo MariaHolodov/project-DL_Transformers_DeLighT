@@ -129,7 +129,7 @@ class CiderScorer(object):
             for n in range(self.n):
                 # ngram
                 for (ngram,count) in vec_hyp[n].items():
-                    pritn(ngram)
+                    print(ngram)
                     # vrama91 : added clipping
                     val[n] += min(vec_hyp[n][ngram], vec_ref[n][ngram]) * vec_ref[n][ngram]
 
