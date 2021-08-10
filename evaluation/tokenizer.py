@@ -58,7 +58,7 @@ class PTBTokenizer(object):
 
         #sentences = '\n'.join(new_sentences)
         lines = new_sentences#sentences.split('\n')
-
+        print(lines)
         # create dictionary for tokenized captions
         for k, line in zip(image_id, lines):
             if not k in tokenized_corpus:
