@@ -43,7 +43,7 @@ class PTBTokenizer(object):
         sentences = '\n'.join([c.replace('\n', ' ') for k, v in corpus.items() for c in v])
 
         #TODO: tokenizer
-        text = "".join([char for char in sentences if char not in punctuations])
+        text = "".join([char for char in sentences if char not in cls.punctuations])
         sent_text = nltk.sent_tokenize(text)
         stop_words = stopwords.words('english')
         porter = PorterStemmer()
