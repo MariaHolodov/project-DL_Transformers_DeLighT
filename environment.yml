@@ -84,4 +84,5 @@ dependencies:
     - werkzeug==0.16.0
     - wrapt==1.10.11
     - ipykernel==5.5.5
+    - nltk
 
