@@ -46,10 +46,10 @@ class PTBTokenizer(object):
         p_tokenizer = subprocess.Popen(cmd, cwd=path_to_jar_dirname, \
                 stdout=subprocess.PIPE, stderr=open(os.devnull, 'w'))
         token_lines = p_tokenizer.communicate(input=sentences.rstrip())[0]
-        pritn('token_lines before decode')
+        print('token_lines before decode')
         print(token_lines)
         token_lines = token_lines.decode()
-        pritn('token_lines after decode')
+        print('token_lines after decode')
         print(token_lines)
         lines = token_lines.split('\n')
         # remove temp file
