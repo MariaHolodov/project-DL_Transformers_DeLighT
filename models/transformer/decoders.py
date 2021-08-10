@@ -9,7 +9,7 @@ from models.containers import Module, ModuleList
 
 
 class MeshedDecoderLayer(Module):
-    def __init__(self, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1, self_att_module=None,
+    def __init__(self, d_model=64, d_k=64, d_v=64, h=1, d_ff=2048, dropout=.1, self_att_module=None,
                  enc_att_module=None, self_att_module_kwargs=None, enc_att_module_kwargs=None):
         super(MeshedDecoderLayer, self).__init__()
         self.self_att = MultiHeadAttention(d_model, d_k, d_v, h, dropout, can_be_stateful=True,
@@ -55,7 +55,7 @@ class MeshedDecoderLayer(Module):
 
 
 class MeshedDecoder(Module):
-    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1,
+    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=64, d_k=64, d_v=64, h=1, d_ff=2048, dropout=.1,
                  self_att_module=None, enc_att_module=None, self_att_module_kwargs=None, enc_att_module_kwargs=None):
         super(MeshedDecoder, self).__init__()
         self.d_model = d_model
