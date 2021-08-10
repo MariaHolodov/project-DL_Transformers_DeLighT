@@ -181,9 +181,13 @@ class MultiHeadAttention(Module):
             values = self.running_values
 
         if self.identity_map_reordering:
-            queries_o = self.ff_layers(queries)
-            keys_o = self.ff_layers(keys)
-            values_o = self.ff_layers(values)
+            queries_o = queries
+            keys_o = keys
+            values_o = values
+            for l in self.ff_layers:
+                queries_o = l(queries_o)
+                keys_o = l(keys_o)
+                values_o = l(values_o)
 
             q_norm = self.layer_norm(queries_o)
             k_norm = self.layer_norm(keys_o)
@@ -193,9 +197,13 @@ class MultiHeadAttention(Module):
             out = self.ff_expand(out)
             out = queries + self.dropout(torch.relu(out))
         else:
-            queries_o = self.ff_layers(queries)
-            keys_o = self.ff_layers(keys)
-            values_o = self.ff_layers(values)
+            queries_o = queries
+            keys_o = keys
+            values_o = values
+            for l in self.ff_layers:
+                queries_o = l(queries_o)
+                keys_o = l(keys_o)
+                values_o = l(values_o)
 
             out = self.attention(queries_o, keys_o, values_o, attention_mask, attention_weights)
             out = self.dropout(out)
