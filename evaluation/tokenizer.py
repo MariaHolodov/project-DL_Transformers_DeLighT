@@ -35,7 +35,7 @@ class PTBTokenizer(object):
         tokenized_corpus = {}
         image_id = [k for k, v in list(corpus.items()) for _ in range(len(v))]
         sentences = '\n'.join([c.replace('\n', ' ') for k, v in corpus.items() for c in v])
-
+        print(sentences)
         # save sentences to temporary file
         path_to_jar_dirname=os.path.dirname(os.path.abspath(__file__))
         tmp_file = tempfile.NamedTemporaryFile(delete=False, dir=path_to_jar_dirname)
