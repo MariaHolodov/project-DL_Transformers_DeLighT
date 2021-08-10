@@ -237,9 +237,9 @@ class COCO(PairedDataset):
             ids['val'] = np.load(os.path.join(id_root, 'coco_dev_ids.npy'))
             ids['test'] = np.load(os.path.join(id_root, 'coco_test_ids.npy'))
             if cut_validation:
-                ids['val'] = ids['val'][:5000]
+                ids['val'] = ids['val'][:200]
                 #print('ids[val] len ' ,len(ids['val']))
-                ids['train'] = ids['train'][:200]
+                ids['train'] = ids['train'][:5000]
                 ids['test'] = ids['test'][:]
 
             ids['trainrestval'] = (
