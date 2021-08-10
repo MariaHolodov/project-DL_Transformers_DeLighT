@@ -163,5 +163,5 @@ class CiderScorer(object):
         # compute cider score
         score = self.compute_cider()
         # debug
-        print score
+        print(score)
         return np.mean(np.array(score)), np.array(score)
