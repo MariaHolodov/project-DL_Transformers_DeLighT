@@ -143,7 +143,7 @@ class MultiHeadAttention(Module):
     Multi-head attention layer with Dropout and Layer Normalization.
     '''
 
-    def __init__(self, d_model, d_k, d_v, h, dropout=.1, identity_map_reordering=False, can_be_stateful=False,
+    def __init__(self, d_model, d_middle, d_o, d_k, d_v, h, dropout=.1, identity_map_reordering=False, can_be_stateful=False,
                  attention_module=None, attention_module_kwargs=None):
         super(MultiHeadAttention, self).__init__()
         self.identity_map_reordering = identity_map_reordering
@@ -162,6 +162,16 @@ class MultiHeadAttention(Module):
             self.register_state('running_keys', torch.zeros((0, d_model)))
             self.register_state('running_values', torch.zeros((0, d_model)))
 
+        # Add delight FF pyramid
+        self.ff_inputs = [d_model] + d_middle
+        self.ff_outputs = d_middle + [d_o]
+        self.ff_layers = []
+        for l_i, l_o in zip(self.ff_inputs, self.ff_outputs):
+            self.ff_layers.append(nn.Linear(l_i, l_o))
+        self.ff_layers = nn.ModuleList(self.ff_layers)
+
+        self.ff_expand = nn.Linear(d_o, d_model)
+
     def forward(self, queries, keys, values, attention_mask=None, attention_weights=None):
         if self.can_be_stateful and self._is_stateful:
             self.running_keys = torch.cat([self.running_keys, keys], 1)
@@ -171,13 +181,25 @@ class MultiHeadAttention(Module):
             values = self.running_values
 
         if self.identity_map_reordering:
-            q_norm = self.layer_norm(queries)
-            k_norm = self.layer_norm(keys)
-            v_norm = self.layer_norm(values)
+            queries_o = self.ff_layers(queries)
+            keys_o = self.ff_layers(keys)
+            values_o = self.ff_layers(values)
+
+            q_norm = self.layer_norm(queries_o)
+            k_norm = self.layer_norm(keys_o)
+            v_norm = self.layer_norm(values_o)
             out = self.attention(q_norm, k_norm, v_norm, attention_mask, attention_weights)
+            # expand d_o back to d_m so we can add them
+            out = self.ff_expand(out)
             out = queries + self.dropout(torch.relu(out))
         else:
-            out = self.attention(queries, keys, values, attention_mask, attention_weights)
+            queries_o = self.ff_layers(queries)
+            keys_o = self.ff_layers(keys)
+            values_o = self.ff_layers(values)
+
+            out = self.attention(queries_o, keys_o, values_o, attention_mask, attention_weights)
             out = self.dropout(out)
+            # expand d_o back to d_m so we can add them
+            out = self.ff_expand(out)
             out = self.layer_norm(queries + out)
         return out
