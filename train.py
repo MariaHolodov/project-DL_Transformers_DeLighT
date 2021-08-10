@@ -67,8 +67,6 @@ def evaluate_metrics(model, dataloader, text_field):
 
     gts = evaluation.PTBTokenizer.tokenize(gts)
     gen = evaluation.PTBTokenizer.tokenize(gen)
-    print(gts)
-    print(gen)
     scores, _ = evaluation.compute_scores(gts, gen)
     return scores
 
