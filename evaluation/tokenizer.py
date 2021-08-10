@@ -53,12 +53,11 @@ class PTBTokenizer(object):
             filtered_words = [word for word in words if word not in stop_words]
             stemmed = [porter.stem(word) for word in filtered_words]
             new_sentence = ' '.join(stemmed)
-            "".join([char for char in new_sentence if char not in string.punctuation])
+            "".join([char for char in new_sentence if char not in cls.punctuations])
             new_sentences.append(new_sentence)
 
         #sentences = '\n'.join(new_sentences)
         lines = new_sentences#sentences.split('\n')
-        print(lines)
         # create dictionary for tokenized captions
         for k, line in zip(image_id, lines):
             if not k in tokenized_corpus:

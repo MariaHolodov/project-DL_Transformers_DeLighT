@@ -240,7 +240,7 @@ class COCO(PairedDataset):
                 ids['val'] = ids['val'][:200]
                 #print('ids[val] len ' ,len(ids['val']))
                 ids['train'] = ids['train'][:200]
-                ids['test'] = ids['test'][:200]
+                ids['test'] = ids['test'][:]
 
             ids['trainrestval'] = (
                 ids['train'],
