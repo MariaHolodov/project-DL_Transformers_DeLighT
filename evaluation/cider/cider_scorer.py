@@ -146,9 +146,12 @@ class CiderScorer(object):
             vec, norm, length = counts2vec(test)
             # compute vector for ref captions
             score = np.array([0.0 for _ in range(self.n)])
+            print('score cider')
+            print(score)
             for ref in refs:
                 vec_ref, norm_ref, length_ref = counts2vec(ref)
                 score += sim(vec, vec_ref, norm, norm_ref, length, length_ref)
+            print(score)
             # change by vrama91 - mean of ngram scores, instead of sum
             score_avg = np.mean(score)
             # divide by number of references
@@ -163,5 +166,4 @@ class CiderScorer(object):
         # compute cider score
         score = self.compute_cider()
         # debug
-        print(score)
         return np.mean(np.array(score)), np.array(score)
