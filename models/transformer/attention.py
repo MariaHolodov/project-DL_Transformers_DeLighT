@@ -173,6 +173,9 @@ class MultiHeadAttention(Module):
         self.ff_expand = nn.Linear(d_o, d_model)
 
     def forward(self, queries, keys, values, attention_mask=None, attention_weights=None):
+        print('queries', queries.shape)
+        print('keys', keys.shape)
+        print('values', values.shape)
         if self.can_be_stateful and self._is_stateful:
             self.running_keys = torch.cat([self.running_keys, keys], 1)
             keys = self.running_keys
@@ -186,8 +189,12 @@ class MultiHeadAttention(Module):
             values_o = values
             for l in self.ff_layers:
                 queries_o = l(queries_o)
+                print(l)
+                print('queries_o', queries_o.shape)
                 keys_o = l(keys_o)
+                print('keys_o', keys_o.shape)
                 values_o = l(values_o)
+                print('values_o', values_o.shape)
 
             q_norm = self.layer_norm(queries_o)
             k_norm = self.layer_norm(keys_o)
