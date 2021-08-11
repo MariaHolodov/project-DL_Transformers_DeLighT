@@ -208,9 +208,13 @@ class MultiHeadAttention(Module):
             keys_o = keys
             values_o = values
             for l in self.ff_layers:
+                print(l)
                 queries_o = l(queries_o)
+                print('queries_o', queries_o.shape)
                 keys_o = l(keys_o)
+                print('keys_o', keys_o.shape)
                 values_o = l(values_o)
+                print('values_o', values_o.shape)
 
             out = self.attention(queries_o, keys_o, values_o, attention_mask, attention_weights)
             out = self.dropout(out)
