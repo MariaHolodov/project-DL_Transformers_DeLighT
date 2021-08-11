@@ -32,8 +32,9 @@ class PTBTokenizer(object):
         image_id = [k for k, v in list(corpus.items()) for _ in range(len(v))]
         sentences = '\n'.join([c.replace('\n', ' ') for k, v in corpus.items() for c in v])
 
-        # download stopwords
+        # downloads nltk
         nltk.download('stopwords')
+        nltk.download('punkt')
 
 
         sentences_lst = sentences.split('\n')
