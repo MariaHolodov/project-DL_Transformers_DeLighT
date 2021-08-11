@@ -149,11 +149,11 @@ class MultiHeadAttention(Module):
         self.identity_map_reordering = identity_map_reordering
         if attention_module is not None:
             if attention_module_kwargs is not None:
-                self.attention = attention_module(d_model=d_model, d_k=d_k, d_v=d_v, h=h, **attention_module_kwargs)
+                self.attention = attention_module(d_model=d_o, d_k=d_k, d_v=d_v, h=h, **attention_module_kwargs)
             else:
-                self.attention = attention_module(d_model=d_model, d_k=d_k, d_v=d_v, h=h)
+                self.attention = attention_module(d_model=d_o, d_k=d_k, d_v=d_v, h=h)
         else:
-            self.attention = ScaledDotProductAttention(d_model=d_model, d_k=d_k, d_v=d_v, h=h)
+            self.attention = ScaledDotProductAttention(d_model=d_o, d_k=d_k, d_v=d_v, h=h)
         self.dropout = nn.Dropout(p=dropout)
         self.layer_norm = nn.LayerNorm(d_model)
 
