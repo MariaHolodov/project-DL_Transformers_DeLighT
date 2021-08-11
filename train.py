@@ -13,6 +13,7 @@ import datetime
 from torch.utils.tensorboard import SummaryWriter
 import argparse, os, pickle
 import numpy as np
+import nltk
 import itertools
 import multiprocessing
 from shutil import copyfile
@@ -159,6 +160,10 @@ if __name__ == '__main__':
     print(args)
 
     print('Meshed-Memory Transformer Training')
+
+    # downloads nltk
+    nltk.download('stopwords')
+    nltk.download('punkt')
 
     writer = SummaryWriter(log_dir=os.path.join(args.logs_folder, args.exp_name))
 
