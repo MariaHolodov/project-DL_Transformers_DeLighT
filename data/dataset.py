@@ -239,8 +239,8 @@ class COCO(PairedDataset):
             if cut_validation:
                 ids['val'] = ids['val'][:200]
                 #print('ids[val] len ' ,len(ids['val']))
-                ids['train'] = ids['train'][:5000]
-                ids['test'] = ids['test'][:]
+                ids['train'] = ids['train'][:200]
+                ids['test'] = ids['test'][:200]
 
             ids['trainrestval'] = (
                 ids['train'],
