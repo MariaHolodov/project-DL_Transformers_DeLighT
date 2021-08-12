@@ -296,8 +296,7 @@ if __name__ == '__main__':
                 use_rl = True
                 switch_to_rl = True
                 # delete datasets of xe training in case we move to rl training
-                del train_dataset, val_dataset, test_dataset, dict_dataloader_train, dict_dataloader_val, \
-                    dict_dataloader_test
+                del train_dataset, val_dataset, test_dataset
                 patience = 0
                 optim = Adam(model.parameters(), lr=5e-6)
                 print("Switching to RL")
