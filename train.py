@@ -282,6 +282,8 @@ if __name__ == '__main__':
 
         # Prepare for next epoch
         best = False
+        print('val cider', val_cider)
+        print('patience', patience)
         if val_cider >= best_cider:
             best_cider = val_cider
             patience = 0
