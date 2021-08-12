@@ -156,6 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--features_path', type=str)
     parser.add_argument('--annotation_folder', type=str)
     parser.add_argument('--logs_folder', type=str, default='tensorboard_logs')
+    parser.add_argument('--patience', type=int, default=10)
     args = parser.parse_args()
     print(args)
 
@@ -290,7 +291,7 @@ if __name__ == '__main__':
 
         switch_to_rl = False
         exit_train = False
-        if patience == 5:
+        if patience == args.patience:
             if not use_rl:
                 use_rl = True
                 switch_to_rl = True
