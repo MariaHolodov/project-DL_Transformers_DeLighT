@@ -210,10 +210,6 @@ if __name__ == '__main__':
     optim = Adam(model.parameters(), lr=1, betas=(0.9, 0.98))
     scheduler = LambdaLR(optim, lambda_lr)
     loss_fn = NLLLoss(ignore_index=text_field.vocab.stoi['<pad>'])
-    ################ Change #######################
-    use_rl = True
-    del train_dataset
-    ###############################################
     best_cider = .0
     patience = 0
     start_epoch = 0
@@ -239,6 +235,11 @@ if __name__ == '__main__':
             use_rl = data['use_rl']
             print('Resuming from epoch %d, validation loss %f, and best cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))
+
+    ################ Change #######################
+    use_rl = True
+    del train_dataset
+    ###############################################
 
     print("Training starts")
     for e in range(start_epoch, start_epoch +200):
