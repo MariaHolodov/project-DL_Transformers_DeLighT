@@ -241,9 +241,10 @@ if __name__ == '__main__':
     print(len(train_dataset))
     for e in range(start_epoch, start_epoch +200):
         start = datetime.datetime.now()
-        dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
-                                      num_workers=args.workers,
-                                      drop_last=True)
+        if not use_rl:
+            dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
+                                          num_workers=args.workers,
+                                          drop_last=True)
         dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False,
                                     num_workers=args.workers)
         dict_dataloader_train = DataLoader(dict_dataset_train, batch_size=args.batch_size // 5, shuffle=True,
