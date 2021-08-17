@@ -156,6 +156,7 @@ if __name__ == '__main__':
     parser.add_argument('--features_path', type=str)
     parser.add_argument('--annotation_folder', type=str)
     parser.add_argument('--logs_folder', type=str, default='tensorboard_logs')
+    parser.add_argument('--patience', type=int, default=10)
     args = parser.parse_args()
     print(args)
 
@@ -209,7 +210,6 @@ if __name__ == '__main__':
     optim = Adam(model.parameters(), lr=1, betas=(0.9, 0.98))
     scheduler = LambdaLR(optim, lambda_lr)
     loss_fn = NLLLoss(ignore_index=text_field.vocab.stoi['<pad>'])
-    use_rl = False
     best_cider = .0
     patience = 0
     start_epoch = 0
@@ -236,13 +236,20 @@ if __name__ == '__main__':
             print('Resuming from epoch %d, validation loss %f, and best cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))
 
+    ################ Change #######################
+    use_rl = True
+    del train_dataset
+    ###############################################
+
     print("Training starts")
-    print(len(train_dataset))
     for e in range(start_epoch, start_epoch +200):
         start = datetime.datetime.now()
-        dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
-                                      drop_last=True)
-        dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
+        if not use_rl:
+            dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True,
+                                          num_workers=args.workers,
+                                          drop_last=True)
+        dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False,
+                                    num_workers=args.workers)
         dict_dataloader_train = DataLoader(dict_dataset_train, batch_size=args.batch_size // 5, shuffle=True,
                                            num_workers=args.workers)
         dict_dataloader_val = DataLoader(dict_dataset_val, batch_size=args.batch_size // 5)
@@ -291,10 +298,12 @@ if __name__ == '__main__':
 
         switch_to_rl = False
         exit_train = False
-        if patience == 5:
+        if patience == args.patience:
             if not use_rl:
                 use_rl = True
                 switch_to_rl = True
+                # delete datasets of xe training in case we move to rl training
+                del train_dataset, test_dataset
                 patience = 0
                 optim = Adam(model.parameters(), lr=5e-6)
                 print("Switching to RL")
