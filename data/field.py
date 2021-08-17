@@ -106,8 +106,6 @@ class ImageDetectionsField(RawField):
 
     def preprocess(self, x, avoid_precomp=False, ids_dict=None):
         image_id = int(x.split('_')[-1].split('.')[0])
-        print('length dict in get item')
-        print(len(ids_dict.keys()))
         try:
             # PROJECT_NAME = 'only_coco_data'
             # CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'

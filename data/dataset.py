@@ -23,7 +23,7 @@ class Dataset(object):
                 image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
                 f = h5py.File(features_root, 'r')
                 with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-                    for image_id in image_ids[:100]:
+                    for image_id in image_ids: #[:100]:
                         self.detections_data[image_id] = f['%d_features' % image_id][()]
                         pbar.update()
         else:
@@ -132,9 +132,9 @@ class DictionaryDataset(Dataset):
             dictionary[key_dict[key_example]].append(i)
 
         self.key_dataset = Dataset(key_examples, key_fields ,detections_data=detections_data)
-        print('key dataset', self.key_dataset.fields)
+        #print('key dataset', self.key_dataset.fields)
         self.value_dataset = ValueDataset(value_examples, value_fields, dictionary)
-        print('value_dataset', self.value_dataset.fields)
+        #print('value_dataset', self.value_dataset.fields)
         super(DictionaryDataset, self).__init__(examples, fields)
 
     def collate_fn(self):
@@ -185,8 +185,6 @@ class PairedDataset(Dataset):
     def image_dictionary(self, fields=None):
         if not fields:
             fields = self.fields
-        print('features root', self.features_root)
-        print('detections length', len(self.detections_data.keys()))
         dataset = DictionaryDataset(self.examples, fields, key_fields='image',detections_data=self.detections_data)
         return dataset
 
@@ -203,7 +201,7 @@ class PairedDataset(Dataset):
 
 class COCO(PairedDataset):
     def __init__(self, image_field, text_field, img_root, features_root, ann_root, id_root=None, use_restval=False,
-                 cut_validation=True):
+                 cut_validation=Flase):
         roots = {}
         roots['train'] = {
             'img': os.path.join(img_root, 'train2014'),

@@ -103,8 +103,8 @@ def train_scst(model, dataloader, optim, cider, text_field):
     # print size of args
     import sys
     local_vars = list(locals().items())
-    for var, obj in local_vars:
-        print(var, sys.getsizeof(obj))
+    #for var, obj in local_vars:
+    #    print(var, sys.getsizeof(obj))
 
     # Training with self-critical
     #tokenizer_pool = multiprocessing.Pool()
