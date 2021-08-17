@@ -145,7 +145,9 @@ class DictionaryDataset(Dataset):
             dictionary[key_dict[key_example]].append(i)
 
         self.key_dataset = Dataset(key_examples, key_fields)
+        print(self.key_dataset)
         self.value_dataset = ValueDataset(value_examples, value_fields, dictionary)
+        print(self.value_dataset)
         super(DictionaryDataset, self).__init__(examples, fields)
 
     def collate_fn(self):
