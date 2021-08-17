@@ -13,34 +13,21 @@ from multiprocessing import Process
 
 
 class Dataset(object):
-    def __init__(self, examples, fields, features_root=None):
-        # def fetch_from_hdf5(hdf5_file, image_id):
-        #     self.detections_data[image_id] = hdf5_file['%d_features' % image_id][()]
+    def __init__(self, examples, fields, features_root=None , detections_data=None):
 
         self.examples = examples
         self.fields = dict(fields)
-        self.detections_data = {}
-        if features_root is not None:
-            image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
-            f = h5py.File(features_root, 'r')
-            with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-                for image_id in image_ids[:100]:
-                    self.detections_data[image_id] = f['%d_features' % image_id][()]
-                    pbar.update()
-            # self.detections_data = {}
-            # image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
-            # f = h5py.File(features_root, 'r')
-            #
-            # procs = []
-            # with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-            #     for image_id in image_ids[:100]:
-            #         proc = Process(target=fetch_from_hdf5, args=(f, image_id))
-            #         procs.append(proc)
-            #         proc.start()
-            #         pbar.update()
-            #
-            #     for proc in procs:
-            #         proc.join()
+        if detections_data is None:
+            self.detections_data = {}
+            if features_root is not None:
+                image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
+                f = h5py.File(features_root, 'r')
+                with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
+                    for image_id in image_ids[:100]:
+                        self.detections_data[image_id] = f['%d_features' % image_id][()]
+                        pbar.update()
+        else:
+            self.detections_data = detections_data
 
     def collate_fn(self):
         def collate(batch):
@@ -121,7 +108,7 @@ class ValueDataset(Dataset):
 
 
 class DictionaryDataset(Dataset):
-    def __init__(self, examples, fields, key_fields):
+    def __init__(self, examples, fields, key_fields, detections_data=None):
         if not isinstance(key_fields, (tuple, list)):
             key_fields = (key_fields,)
         for field in key_fields:
@@ -144,10 +131,10 @@ class DictionaryDataset(Dataset):
             value_examples.append(value_example)
             dictionary[key_dict[key_example]].append(i)
 
-        self.key_dataset = Dataset(key_examples, key_fields)
-        print('key dataset', self.key_dataset)
+        self.key_dataset = Dataset(key_examples, key_fields ,detections_data=detections_data)
+        print('key dataset', self.key_dataset.fields)
         self.value_dataset = ValueDataset(value_examples, value_fields, dictionary)
-        print('value_dataset', self.value_dataset)
+        print('value_dataset', self.value_dataset.fields)
         super(DictionaryDataset, self).__init__(examples, fields)
 
     def collate_fn(self):
@@ -200,7 +187,7 @@ class PairedDataset(Dataset):
             fields = self.fields
         print('features root', self.features_root)
         print('detections length', len(self.detections_data.keys()))
-        dataset = DictionaryDataset(self.examples, fields, key_fields='image')
+        dataset = DictionaryDataset(self.examples, fields, key_fields='image',detections_data=self.detections_data)
         return dataset
 
     def text_dictionary(self, fields=None):
