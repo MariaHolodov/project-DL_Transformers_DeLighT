@@ -239,6 +239,7 @@ if __name__ == '__main__':
     ################ Change #######################
     use_rl = True
     del train_dataset
+    print('remove dataset from RAM')
     ###############################################
 
     print("Training starts")
