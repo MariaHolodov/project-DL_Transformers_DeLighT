@@ -107,7 +107,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
         print(var, sys.getsizeof(obj))
 
     # Training with self-critical
-    tokenizer_pool = multiprocessing.Pool()
+    #tokenizer_pool = multiprocessing.Pool()
     running_reward = .0
     running_reward_baseline = .0
     model.train()
@@ -125,7 +125,11 @@ def train_scst(model, dataloader, optim, cider, text_field):
             # Rewards
             caps_gen = text_field.decode(outs.view(-1, seq_len))
             caps_gt = list(itertools.chain(*([c, ] * beam_size for c in caps_gt)))
-            caps_gen, caps_gt = tokenizer_pool.map(evaluation.PTBTokenizer.tokenize, [caps_gen, caps_gt])
+
+            caps_gt = evaluation.PTBTokenizer.tokenize(caps_gt)
+            caps_gen = evaluation.PTBTokenizer.tokenize(caps_gen)
+            #caps_gen, caps_gt = tokenizer_pool.map(evaluation.PTBTokenizer.tokenize, [caps_gen, caps_gt])
+            #tokenizer_pool.close()
             reward = cider.compute_score(caps_gt, caps_gen)[1].astype(np.float32)
             reward = torch.from_numpy(reward).to(device).view(detections.shape[0], beam_size)
             reward_baseline = torch.mean(reward, -1, keepdim=True)
