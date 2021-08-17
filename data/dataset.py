@@ -216,7 +216,7 @@ class PairedDataset(Dataset):
 
 class COCO(PairedDataset):
     def __init__(self, image_field, text_field, img_root, features_root, ann_root, id_root=None, use_restval=False,
-                 cut_validation=False):
+                 cut_validation=True):
         roots = {}
         roots['train'] = {
             'img': os.path.join(img_root, 'train2014'),
