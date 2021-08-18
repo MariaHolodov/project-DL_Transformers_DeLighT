@@ -109,7 +109,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
     seq_len = 20
     beam_size = 5
 
-    end_epoch_time = datetime.datetime.now()
+    end_batch_time = datetime.datetime.now()
 
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, caps_gt) in enumerate(dataloader):
@@ -119,7 +119,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
             outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
                                                 beam_size, out_size=beam_size)
             time_beam = datetime.datetime.now()
-            print('time of beam search - feed forward:', (time_beam - start_epoch_time).total_seconds())
+            print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
             optim.zero_grad()
 
             # Rewards
