@@ -266,7 +266,7 @@ if __name__ == '__main__':
         dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False,
                                     num_workers=args.workers)
         dict_dataloader_train = DataLoader(dict_dataset_train, batch_size=args.batch_size // 5, shuffle=True,
-                                           num_workers=args.workers)
+                                           num_workers=args.workers, pin_memory=True)
         dict_dataloader_val = DataLoader(dict_dataset_val, batch_size=args.batch_size // 5)
         dict_dataloader_test = DataLoader(dict_dataset_test, batch_size=args.batch_size // 5)
 
