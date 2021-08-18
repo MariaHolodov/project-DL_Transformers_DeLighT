@@ -99,7 +99,7 @@ def train_xe(model, dataloader, optim, text_field):
     return loss
 
 
-def train_scst(model, dataloader, optim, cider, text_field):
+def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
     # Training with self-critical
     #tokenizer_pool = multiprocessing.Pool()
     running_reward = .0
@@ -113,13 +113,13 @@ def train_scst(model, dataloader, optim, cider, text_field):
 
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, caps_gt) in enumerate(dataloader):
-            start_batch_time = datetime.datetime.now()
-            print('time of batch initialization (mins):', (start_batch_time-end_batch_time).total_seconds())
+            # start_batch_time = datetime.datetime.now()
+            # print('time of batch initialization (mins):', (start_batch_time-end_batch_time).total_seconds())
             detections = detections.to(device)
             outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
                                                 beam_size, out_size=beam_size)
-            time_beam = datetime.datetime.now()
-            print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
+            # time_beam = datetime.datetime.now()
+            # print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
             optim.zero_grad()
 
             # Rewards
@@ -128,8 +128,8 @@ def train_scst(model, dataloader, optim, cider, text_field):
 
             caps_gt = evaluation.PTBTokenizer.tokenize(caps_gt)
             caps_gen = evaluation.PTBTokenizer.tokenize(caps_gen)
-            time_tokaniztion = datetime.datetime.now()
-            print('time of tokenization output and true caption:', (time_tokaniztion - time_beam).total_seconds())
+            # time_tokaniztion = datetime.datetime.now()
+            # print('time of tokenization output and true caption:', (time_tokaniztion - time_beam).total_seconds())
 
             #caps_gen, caps_gt = tokenizer_pool.map(evaluation.PTBTokenizer.tokenize, [caps_gen, caps_gt])
             #tokenizer_pool.close()
@@ -139,16 +139,18 @@ def train_scst(model, dataloader, optim, cider, text_field):
             loss = -torch.mean(log_probs, -1) * (reward - reward_baseline)
 
             loss = loss.mean()
-            time_reward = datetime.datetime.now()
-            print('time of reward:', (time_reward-time_beam).total_seconds())
+            loss = loss / accumulation_steps
+            # time_reward = datetime.datetime.now()
+            # print('time of reward:', (time_reward-time_beam).total_seconds())
 
             loss.backward()
-            time_backward = datetime.datetime.now()
-            print('time of backward:', (time_backward- time_reward).total_seconds())
+            # time_backward = datetime.datetime.now()
+            # print('time of backward:', (time_backward- time_reward).total_seconds())
 
-            optim.step()
-            time_optim = datetime.datetime.now()
-            print('time of optim:', (time_optim - time_backward).total_seconds())
+            if it % accumulation_steps == 0:
+                optim.step()
+            # time_optim = datetime.datetime.now()
+            # print('time of optim:', (time_optim - time_backward).total_seconds())
 
             running_loss += loss.item()
             running_reward += reward.mean().item()
@@ -156,7 +158,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
             pbar.set_postfix(loss=running_loss / (it + 1), reward=running_reward / (it + 1),
                              reward_baseline=running_reward_baseline / (it + 1))
             pbar.update()
-            end_batch_time = datetime.datetime.now()
+            # end_batch_time = datetime.datetime.now()
 
     loss = running_loss / len(dataloader)
     reward = running_reward / len(dataloader)
@@ -170,6 +172,7 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default='m2_transformer')
     parser.add_argument('--batch_size', type=int, default=10)
     parser.add_argument('--workers', type=int, default=0)
+    parser.add_argument('--accumulation_steps', type=int, default=3)
     parser.add_argument('--m', type=int, default=40)
     parser.add_argument('--head', type=int, default=8)
     parser.add_argument('--warmup', type=int, default=10000)
@@ -282,7 +285,8 @@ if __name__ == '__main__':
             train_loss = train_xe(model, dataloader_train, optim, text_field)
             writer.add_scalar('data/train_loss', train_loss, e)
         else:
-            train_loss, reward, reward_baseline = train_scst(model, dict_dataloader_train, optim, cider_train, text_field)
+            train_loss, reward, reward_baseline = train_scst(model, dict_dataloader_train, optim, cider_train,
+                                                             text_field, args.accumulation_steps)
             writer.add_scalar('data/train_loss', train_loss, e)
             writer.add_scalar('data/reward', reward, e)
             writer.add_scalar('data/reward_baseline', reward_baseline, e)
