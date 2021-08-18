@@ -100,12 +100,6 @@ def train_xe(model, dataloader, optim, text_field):
 
 
 def train_scst(model, dataloader, optim, cider, text_field):
-    # print size of args
-    import sys
-    local_vars = list(locals().items())
-    #for var, obj in local_vars:
-    #    print(var, sys.getsizeof(obj))
-
     # Training with self-critical
     #tokenizer_pool = multiprocessing.Pool()
     running_reward = .0
@@ -115,11 +109,17 @@ def train_scst(model, dataloader, optim, cider, text_field):
     seq_len = 20
     beam_size = 5
 
+    end_epoch_time = datetime.datetime.now()
+
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, caps_gt) in enumerate(dataloader):
+            start_epoch_time = datetime.datetime.now()
+            print('time of epoch initialization (mins):', (start_epoch_time-end_epoch_time).seconds)
             detections = detections.to(device)
             outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
                                                 beam_size, out_size=beam_size)
+            time_beam = datetime.datetime.now()
+            print('time of beam search - feed forward:', (time_beam - start_epoch_time).seconds)
             optim.zero_grad()
 
             # Rewards
@@ -128,6 +128,9 @@ def train_scst(model, dataloader, optim, cider, text_field):
 
             caps_gt = evaluation.PTBTokenizer.tokenize(caps_gt)
             caps_gen = evaluation.PTBTokenizer.tokenize(caps_gen)
+            time_tokaniztion = datetime.datetime.now()
+            print('time of tokenization output and true caption:', (time_tokaniztion - time_beam).seconds)
+
             #caps_gen, caps_gt = tokenizer_pool.map(evaluation.PTBTokenizer.tokenize, [caps_gen, caps_gt])
             #tokenizer_pool.close()
             reward = cider.compute_score(caps_gt, caps_gen)[1].astype(np.float32)
@@ -145,6 +148,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
             pbar.set_postfix(loss=running_loss / (it + 1), reward=running_reward / (it + 1),
                              reward_baseline=running_reward_baseline / (it + 1))
             pbar.update()
+            end_epoch_time = datetime.datetime.now()
 
     loss = running_loss / len(dataloader)
     reward = running_reward / len(dataloader)
