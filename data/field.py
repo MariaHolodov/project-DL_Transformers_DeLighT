@@ -119,6 +119,7 @@ class ImageDetectionsField(RawField):
             if ids_dict is not None and image_id in ids_dict.keys():
                 precomp_data = ids_dict[image_id]
             else:
+                print('reading from file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 f = h5py.File(self.detections_path, 'r')
                 precomp_data = f['%d_features' % image_id][()]
                 if self.sort_by_prob:
