@@ -131,10 +131,8 @@ class DictionaryDataset(Dataset):
             value_examples.append(value_example)
             dictionary[key_dict[key_example]].append(i)
 
-        self.key_dataset = Dataset(key_examples, key_fields ,detections_data=detections_data)
-        #print('key dataset', self.key_dataset.fields)
+        self.key_dataset = Dataset(key_examples, key_fields, detections_data=detections_data)
         self.value_dataset = ValueDataset(value_examples, value_fields, dictionary)
-        #print('value_dataset', self.value_dataset.fields)
         super(DictionaryDataset, self).__init__(examples, fields)
 
     def collate_fn(self):
@@ -185,7 +183,7 @@ class PairedDataset(Dataset):
     def image_dictionary(self, fields=None):
         if not fields:
             fields = self.fields
-        dataset = DictionaryDataset(self.examples, fields, key_fields='image',detections_data=self.detections_data)
+        dataset = DictionaryDataset(self.examples, fields, key_fields='image', detections_data=None)#self.detections_data)
         return dataset
 
     def text_dictionary(self, fields=None):
@@ -227,7 +225,6 @@ class COCO(PairedDataset):
             ids['test'] = np.load(os.path.join(id_root, 'coco_test_ids.npy'))
             if cut_validation:
                 ids['val'] = ids['val'][:200]
-                #print('ids[val] len ' ,len(ids['val']))
                 ids['train'] = ids['train'][:5000]
                 ids['test'] = ids['test'][:200]
 
