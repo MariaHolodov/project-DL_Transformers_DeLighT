@@ -113,13 +113,13 @@ def train_scst(model, dataloader, optim, cider, text_field):
 
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, caps_gt) in enumerate(dataloader):
-            start_epoch_time = datetime.datetime.now()
-            print('time of epoch initialization (mins):', (start_epoch_time-end_epoch_time).total_seconds())
+            start_batch_time = datetime.datetime.now()
+            # print('time of batch initialization (mins):', (start_batch_time-end_batch_time).total_seconds())
             detections = detections.to(device)
             outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
                                                 beam_size, out_size=beam_size)
-            time_beam = datetime.datetime.now()
-            print('time of beam search - feed forward:', (time_beam - start_epoch_time).total_seconds())
+            # time_beam = datetime.datetime.now()
+            # print('time of beam search - feed forward:', (time_beam - start_epoch_time).total_seconds())
             optim.zero_grad()
 
             # Rewards
@@ -128,8 +128,8 @@ def train_scst(model, dataloader, optim, cider, text_field):
 
             caps_gt = evaluation.PTBTokenizer.tokenize(caps_gt)
             caps_gen = evaluation.PTBTokenizer.tokenize(caps_gen)
-            time_tokaniztion = datetime.datetime.now()
-            print('time of tokenization output and true caption:', (time_tokaniztion - time_beam).total_seconds())
+            # time_tokaniztion = datetime.datetime.now()
+            # print('time of tokenization output and true caption:', (time_tokaniztion - time_beam).total_seconds())
 
             #caps_gen, caps_gt = tokenizer_pool.map(evaluation.PTBTokenizer.tokenize, [caps_gen, caps_gt])
             #tokenizer_pool.close()
@@ -148,7 +148,7 @@ def train_scst(model, dataloader, optim, cider, text_field):
             pbar.set_postfix(loss=running_loss / (it + 1), reward=running_reward / (it + 1),
                              reward_baseline=running_reward_baseline / (it + 1))
             pbar.update()
-            end_epoch_time = datetime.datetime.now()
+            end_batch_time = datetime.datetime.now()
 
     loss = running_loss / len(dataloader)
     reward = running_reward / len(dataloader)
