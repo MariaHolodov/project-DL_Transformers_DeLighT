@@ -7,7 +7,7 @@ from models.transformer import Transformer, MemoryAugmentedEncoder, MeshedDecode
 import torch
 from torch.optim import Adam
 from torch.optim.lr_scheduler import LambdaLR
-from torch.nn import NLLLoss
+from torch.nn import NLLLoss , DataParallel
 from tqdm import tqdm
 import datetime
 from torch.utils.tensorboard import SummaryWriter
@@ -99,7 +99,7 @@ def train_xe(model, dataloader, optim, text_field):
     return loss
 
 
-def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
+def train_scst(parallel_model, dataloader, optim, cider, text_field, accumulation_steps):
     # Training with self-critical
     #tokenizer_pool = multiprocessing.Pool()
     running_reward = .0
@@ -116,8 +116,11 @@ def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
             # start_batch_time = datetime.datetime.now()
             # print('time of batch initialization (mins):', (start_batch_time-end_batch_time).total_seconds())
             detections = detections.to(device)
-            outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
-                                                beam_size, out_size=beam_size)
+
+            outs, log_probs = parallel_model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
+            #                                    beam_size, out_size=beam_size)
+            #outs, log_probs = model.beam_search(detections, seq_len, text_field.vocab.stoi['<eos>'],
+            #                                    beam_size, out_size=beam_size)
             # time_beam = datetime.datetime.now()
             # print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
             optim.zero_grad()
@@ -217,6 +220,7 @@ if __name__ == '__main__':
                                      attention_module_kwargs={'m': args.m})
     decoder = MeshedDecoder(len(text_field.vocab), 54, 3, text_field.vocab.stoi['<pad>'])
     model = Transformer(text_field.vocab.stoi['<bos>'], encoder, decoder).to(device)
+    parallel_model = torch.nn.DataParallel(model)  # Encapsulate the model
 
     dict_dataset_train = train_dataset.image_dictionary({'image': image_field, 'text': RawField()})
     ref_caps_train = list(train_dataset.text)
@@ -285,7 +289,7 @@ if __name__ == '__main__':
             train_loss = train_xe(model, dataloader_train, optim, text_field)
             writer.add_scalar('data/train_loss', train_loss, e)
         else:
-            train_loss, reward, reward_baseline = train_scst(model, dict_dataloader_train, optim, cider_train,
+            train_loss, reward, reward_baseline = train_scst(parallel_model, dict_dataloader_train, optim, cider_train,
                                                              text_field, args.accumulation_steps)
             writer.add_scalar('data/train_loss', train_loss, e)
             writer.add_scalar('data/reward', reward, e)
