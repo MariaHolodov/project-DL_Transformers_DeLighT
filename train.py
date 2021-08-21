@@ -182,7 +182,7 @@ if __name__ == '__main__':
     parser.add_argument('--annotation_folder', type=str)
     parser.add_argument('--logs_folder', type=str, default='tensorboard_logs')
     parser.add_argument('--patience', type=int, default=10)
-  	parser.add_argument('--vc_features', type=str, default='vc_coco_trainval_2014')
+    parser.add_argument('--vc_features', type=str, default='vc_coco_trainval_2014')
 
     args = parser.parse_args()
     print(args)
