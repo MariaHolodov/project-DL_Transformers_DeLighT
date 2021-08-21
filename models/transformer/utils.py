@@ -29,7 +29,7 @@ class PositionWiseFeedForward(nn.Module):
     Position-wise feed forward layer
     '''
 
-    def __init__(self, d_model=512, d_ff=2048, dropout=.1, identity_map_reordering=False):
+    def __init__(self, d_model=512, d_ff=3072, dropout=.1, identity_map_reordering=False):
         super(PositionWiseFeedForward, self).__init__()
         self.identity_map_reordering = identity_map_reordering
         self.fc1 = nn.Linear(d_model, d_ff)

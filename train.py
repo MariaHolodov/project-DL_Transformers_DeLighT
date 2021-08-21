@@ -182,6 +182,8 @@ if __name__ == '__main__':
     parser.add_argument('--annotation_folder', type=str)
     parser.add_argument('--logs_folder', type=str, default='tensorboard_logs')
     parser.add_argument('--patience', type=int, default=10)
+  	parser.add_argument('--vc_features', type=str, default='vc_coco_trainval_2014')
+
     args = parser.parse_args()
     print(args)
 
@@ -194,7 +196,7 @@ if __name__ == '__main__':
     writer = SummaryWriter(log_dir=os.path.join(args.logs_folder, args.exp_name))
 
     # Pipeline for image regions
-    image_field = ImageDetectionsField(detections_path=args.features_path, max_detections=50, load_in_tmp=False)
+    image_field = ImageDetectionsField(detections_path=args.features_path, vc_features=args.vc_features, max_detections=50, load_in_tmp=False)
 
     # Pipeline for text
     text_field = TextField(init_token='<bos>', eos_token='<eos>', lower=True, tokenize='spacy',
@@ -260,12 +262,6 @@ if __name__ == '__main__':
             use_rl = data['use_rl']
             print('Resuming from epoch %d, validation loss %f, and best cider %f' % (
                 data['epoch'], data['val_loss'], data['best_cider']))
-
-    ################ Change #######################
-    use_rl = True
-    del train_dataset
-    print('remove dataset from RAM')
-    ###############################################
 
     print("Training starts")
     for e in range(start_epoch, start_epoch +200):

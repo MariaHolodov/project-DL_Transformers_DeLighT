@@ -82,10 +82,11 @@ class Merge(RawField):
 
 
 class ImageDetectionsField(RawField):
-    def __init__(self, preprocessing=None, postprocessing=None, detections_path=None, max_detections=100,
+    def __init__(self, preprocessing=None, postprocessing=None, detections_path=None, vc_features=None, max_detections=100,
                  sort_by_prob=False, load_in_tmp=True):
         self.max_detections = max_detections
         self.detections_path = detections_path
+        self.vc_features = vc_features
         self.sort_by_prob = sort_by_prob
 
         tmp_detections_path = os.path.join('/tmp', os.path.basename(detections_path))
@@ -107,6 +108,9 @@ class ImageDetectionsField(RawField):
     def preprocess(self, x, avoid_precomp=False, ids_dict=None):
         image_id = int(x.split('_')[-1].split('.')[0])
         try:
+            vc_f1 = np.load(os.path.join(self.vc_features,str(image_id) + '.npy'))
+
+            str(image_id)
             # PROJECT_NAME = 'only_coco_data'
             # CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'
             # MODEL_PATH = 'gs://only_coco_data/coco_detections.hdf5'
@@ -122,6 +126,7 @@ class ImageDetectionsField(RawField):
                 print('reading from file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
                 f = h5py.File(self.detections_path, 'r')
                 precomp_data = f['%d_features' % image_id][()]
+			precomp_data = np.concatenate([precomp_data,vc_f1],axis=1)
                 if self.sort_by_prob:
                     precomp_data = precomp_data[np.argsort(np.max(f['%d_cls_prob' % image_id][()], -1))[::-1]]
         except KeyError:

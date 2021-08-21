@@ -52,7 +52,7 @@ class MultiLevelEncoder(nn.Module):
 
 
 class MemoryAugmentedEncoder(MultiLevelEncoder):
-    def __init__(self, N, padding_idx, d_in=2048, **kwargs):
+    def __init__(self, N, padding_idx, d_in=3072, **kwargs):
         super(MemoryAugmentedEncoder, self).__init__(N, padding_idx, **kwargs)
         self.fc = nn.Linear(d_in, self.d_model)
         self.dropout = nn.Dropout(p=self.dropout)
