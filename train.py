@@ -9,7 +9,6 @@ from torch.optim import Adam
 from torch.optim.lr_scheduler import LambdaLR
 from torch.nn import NLLLoss
 from tqdm import tqdm
-import datetime
 from torch.utils.tensorboard import SummaryWriter
 import argparse, os, pickle
 import numpy as np
@@ -70,6 +69,7 @@ def evaluate_metrics(model, dataloader, text_field):
 
 
 def train_xe(model, dataloader, optim, text_field):
+
     # Training with cross-entropy
     model.train()
     scheduler.step()
@@ -153,6 +153,8 @@ if __name__ == '__main__':
     parser.add_argument('--features_path', type=str)
     parser.add_argument('--annotation_folder', type=str)
     parser.add_argument('--logs_folder', type=str, default='tensorboard_logs')
+    parser.add_argument('--vc_features', type=str, default='vc_coco_trainval_2014')
+
     args = parser.parse_args()
     print(args)
 
@@ -161,7 +163,7 @@ if __name__ == '__main__':
     writer = SummaryWriter(log_dir=os.path.join(args.logs_folder, args.exp_name))
 
     # Pipeline for image regions
-    image_field = ImageDetectionsField(detections_path=args.features_path, max_detections=50, load_in_tmp=False)
+    image_field = ImageDetectionsField(detections_path=args.features_path, vc_features=args.vc_features, max_detections=50, load_in_tmp=False)
 
     # Pipeline for text
     text_field = TextField(init_token='<bos>', eos_token='<eos>', lower=True, tokenize='spacy',
@@ -231,7 +233,6 @@ if __name__ == '__main__':
     print("Training starts")
     print(len(train_dataset))
     for e in range(start_epoch, start_epoch +200):
-        start = datetime.datetime.now()
         dataloader_train = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
                                       drop_last=True)
         dataloader_val = DataLoader(val_dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.workers)
@@ -326,6 +327,3 @@ if __name__ == '__main__':
         if exit_train:
             writer.close()
             break
-        end = datetime.datetime.now()
-        time_delta = (end - start)
-        time_delta.total_seconds()

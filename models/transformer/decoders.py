@@ -55,7 +55,7 @@ class MeshedDecoderLayer(Module):
 
 
 class MeshedDecoder(Module):
-    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1,
+    def __init__(self, vocab_size, max_len, N_dec, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=3072, dropout=.1,
                  self_att_module=None, enc_att_module=None, self_att_module_kwargs=None, enc_att_module_kwargs=None):
         super(MeshedDecoder, self).__init__()
         self.d_model = d_model

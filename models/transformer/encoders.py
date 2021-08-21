@@ -7,7 +7,7 @@ from models.transformer.attention import MultiHeadAttention
 
 
 class EncoderLayer(nn.Module):
-    def __init__(self, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1, identity_map_reordering=False,
+    def __init__(self, d_model=64, d_k=8, d_v=8, h=1, d_ff=3072, dropout=.1, identity_map_reordering=False,
                  attention_module=None, attention_module_kwargs=None):
         super(EncoderLayer, self).__init__()
         self.identity_map_reordering = identity_map_reordering
@@ -23,7 +23,7 @@ class EncoderLayer(nn.Module):
 
 
 class MultiLevelEncoder(nn.Module):
-    def __init__(self, N, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=2048, dropout=.1,
+    def __init__(self, N, padding_idx, d_model=64, d_k=8, d_v=8, h=1, d_ff=3072, dropout=.1,
                  identity_map_reordering=False, attention_module=None, attention_module_kwargs=None):
         super(MultiLevelEncoder, self).__init__()
         self.d_model = d_model
@@ -50,7 +50,7 @@ class MultiLevelEncoder(nn.Module):
 
 
 class MemoryAugmentedEncoder(MultiLevelEncoder):
-    def __init__(self, N, padding_idx, d_in=2048, **kwargs):
+    def __init__(self, N, padding_idx, d_in=3072, **kwargs):
         super(MemoryAugmentedEncoder, self).__init__(N, padding_idx, **kwargs)
         self.fc = nn.Linear(d_in, self.d_model)
         self.dropout = nn.Dropout(p=self.dropout)
