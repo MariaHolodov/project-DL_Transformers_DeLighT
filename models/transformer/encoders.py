@@ -7,7 +7,7 @@ from models.transformer.attention import MultiHeadAttention
 
 #test
 class EncoderLayer(nn.Module):
-    def __init__(self, d_model=512, d_middle=[1024], d_o=256, d_k=64, d_v=64, h=1, d_ff=128, dropout=.1, identity_map_reordering=False,
+    def __init__(self, d_model=512, d_middle=[768,1024,512], d_o=256, d_k=64, d_v=64, h=1, d_ff=128, dropout=.1, identity_map_reordering=False,
                  attention_module=None, attention_module_kwargs=None):
         super(EncoderLayer, self).__init__()
         self.identity_map_reordering = identity_map_reordering
@@ -24,7 +24,7 @@ class EncoderLayer(nn.Module):
 
 
 class MultiLevelEncoder(nn.Module):
-    def __init__(self, N, padding_idx, d_model=512, d_middle=[1024], d_o=256, d_k=64, d_v=64, h=1, d_ff=128, dropout=.1,
+    def __init__(self, N, padding_idx, d_model=512, d_middle=[768,1024,512], d_o=256, d_k=64, d_v=64, h=1, d_ff=128, dropout=.1,
                  identity_map_reordering=False, attention_module=None, attention_module_kwargs=None):
         super(MultiLevelEncoder, self).__init__()
         self.d_model = d_model
