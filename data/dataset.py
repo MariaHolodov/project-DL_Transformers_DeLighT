@@ -199,7 +199,7 @@ class PairedDataset(Dataset):
 
 class COCO(PairedDataset):
     def __init__(self, image_field, text_field, img_root, features_root, ann_root, id_root=None, use_restval=False,
-                 cut_validation=False):
+                 cut_validation=True):
         roots = {}
         roots['train'] = {
             'img': os.path.join(img_root, 'train2014'),
@@ -225,7 +225,7 @@ class COCO(PairedDataset):
             ids['test'] = np.load(os.path.join(id_root, 'coco_test_ids.npy'))
             if cut_validation:
                 ids['val'] = ids['val'][:200]
-                ids['train'] = ids['train'][:5000]
+                ids['train'] = ids['train'][:500]
                 ids['test'] = ids['test'][:200]
 
             ids['trainrestval'] = (
