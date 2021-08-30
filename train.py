@@ -111,6 +111,7 @@ def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
 
     end_batch_time = datetime.datetime.now()
 
+    model.zero_grad()
     with tqdm(desc='Epoch %d - train' % e, unit='it', total=len(dataloader)) as pbar:
         for it, (detections, caps_gt) in enumerate(dataloader):
             # start_batch_time = datetime.datetime.now()
@@ -149,6 +150,7 @@ def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
 
             if it % accumulation_steps == 0:
                 optim.step()
+                model.zero_grad()
             # time_optim = datetime.datetime.now()
             # print('time of optim:', (time_optim - time_backward).total_seconds())
 
