@@ -172,7 +172,7 @@ if __name__ == '__main__':
     device = torch.device('cuda')
     parser = argparse.ArgumentParser(description='Meshed-Memory Transformer')
     parser.add_argument('--exp_name', type=str, default='m2_transformer')
-    parser.add_argument('--batch_size', type=int, default=10)
+    parser.add_argument('--batch_size', type=int, default=50)
     parser.add_argument('--workers', type=int, default=0)
     parser.add_argument('--accumulation_steps', type=int, default=5)
     parser.add_argument('--m', type=int, default=40)
