@@ -121,7 +121,6 @@ def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
                                                 beam_size, out_size=beam_size)
             # time_beam = datetime.datetime.now()
             # print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
-            optim.zero_grad()
 
             # Rewards
             caps_gen = text_field.decode(outs.view(-1, seq_len))
