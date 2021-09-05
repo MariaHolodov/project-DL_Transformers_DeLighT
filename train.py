@@ -121,7 +121,6 @@ def train_scst(model, dataloader, optim, cider, text_field, accumulation_steps):
                                                 beam_size, out_size=beam_size)
             # time_beam = datetime.datetime.now()
             # print('time of beam search - feed forward:', (time_beam - start_batch_time).total_seconds())
-            optim.zero_grad()
 
             # Rewards
             caps_gen = text_field.decode(outs.view(-1, seq_len))
@@ -174,7 +173,7 @@ if __name__ == '__main__':
     parser.add_argument('--exp_name', type=str, default='m2_transformer')
     parser.add_argument('--batch_size', type=int, default=50)
     parser.add_argument('--workers', type=int, default=0)
-    parser.add_argument('--accumulation_steps', type=int, default=5)
+    parser.add_argument('--accumulation_steps', type=int, default=2)
     parser.add_argument('--m', type=int, default=40)
     parser.add_argument('--head', type=int, default=1)
     parser.add_argument('--warmup', type=int, default=10000)
