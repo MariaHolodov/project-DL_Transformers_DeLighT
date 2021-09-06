@@ -108,18 +108,11 @@ class ImageDetectionsField(RawField):
     def preprocess(self, x, avoid_precomp=False, ids_dict=None):
         image_id = int(x.split('_')[-1].split('.')[0])
         try:
-            vc_f1 = np.load(os.path.join(self.vc_features,str(image_id) + '.npy'))
+            if os.path.isfile(os.path.join(self.vc_features,str(image_id) + '.npy')):
+                vc_f1 = np.load(os.path.join(self.vc_features,str(image_id) + '.npy'))
+            else:
+                vc_f1 = np.random.rand(10, 1024)
 
-            str(image_id)
-            # PROJECT_NAME = 'only_coco_data'
-            # CREDENTIALS = 'powerful-memory-317309-bf0289c01ecf.json'
-            # MODEL_PATH = 'gs://only_coco_data/coco_detections.hdf5'
-            #
-            # FS = gcsfs.GCSFileSystem(project=PROJECT_NAME,
-            #                          token=CREDENTIALS)
-            # with FS.open(MODEL_PATH, 'rb') as tmp_detections_path:
-            #     f = h5py.File(tmp_detections_path, 'r')
-            #     precomp_data = f['%d_features' % image_id][()]
             if ids_dict is not None and image_id in ids_dict.keys():
                 precomp_data = ids_dict[image_id]
             else:
@@ -129,7 +122,8 @@ class ImageDetectionsField(RawField):
             precomp_data = np.concatenate([precomp_data,vc_f1],axis=1)
             if self.sort_by_prob:
                     precomp_data = precomp_data[np.argsort(np.max(f['%d_cls_prob' % image_id][()], -1))[::-1]]
-        except :#KeyError:
+
+        except:#KeyError:
             warnings.warn('Could not find detections for %d' % image_id)
             precomp_data = np.random.rand(10,3072)#2048)
 
