@@ -108,9 +108,10 @@ class ImageDetectionsField(RawField):
     def preprocess(self, x, avoid_precomp=False, ids_dict=None):
         image_id = int(x.split('_')[-1].split('.')[0])
         try:
-            if os.path.isfile(os.path.join(self.vc_features,str(image_id) + '.npy')):
-                vc_f1 = np.load(os.path.join(self.vc_features,str(image_id) + '.npy'))
+            if os.path.isfile(os.path.join(self.vc_features, str(image_id) + '.npy')):
+                vc_f1 = np.load(os.path.join(self.vc_features, str(image_id) + '.npy'))
             else:
+                print('Could not fins VC features for: %d' % image_id)
                 vc_f1 = np.random.rand(10, 1024)
 
             if ids_dict is not None and image_id in ids_dict.keys():
