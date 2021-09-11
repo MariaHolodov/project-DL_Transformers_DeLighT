@@ -29,6 +29,7 @@ def predict_captions(model, dataloader, text_field):
                 gen_i = ' '.join([k for k, g in itertools.groupby(gen_i)])
                 gen['%d_%d' % (it, i)] = [gen_i.strip(), ]
                 gts['%d_%d' % (it, i)] = gts_i
+                print(gts_i)
             pbar.update()
 
     gts = evaluation.PTBTokenizer.tokenize(gts)
