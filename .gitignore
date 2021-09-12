@@ -2,6 +2,7 @@
 *.json
 *.bz2
 *.pkl
+*.pyc
 *.jar
 *.gz
 *.h
