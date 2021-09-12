@@ -111,7 +111,7 @@ class ImageDetectionsField(RawField):
             if os.path.isfile(os.path.join(self.vc_features, str(image_id) + '.npy')):
                 vc_f1 = np.load(os.path.join(self.vc_features, str(image_id) + '.npy'))
             else:
-                print('Could not fins VC features for: %d' % image_id)
+                print('Could not find VC features for: %d' % image_id)
                 vc_f1 = np.random.rand(10, 1024)
 
             if ids_dict is not None and image_id in ids_dict.keys():
