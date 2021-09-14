@@ -21,6 +21,7 @@ def predict_captions(model, dataloader, text_field):
     gts = {}
     with tqdm(desc='Evaluation', unit='it', total=len(dataloader)) as pbar:
         for it, (images, caps_gt) in enumerate(iter(dataloader)):
+            print(images)
             images = images.to(device)
             with torch.no_grad():
                 out, _ = model.beam_search(images, 20, text_field.vocab.stoi['<eos>'], 5, out_size=1)
@@ -29,7 +30,7 @@ def predict_captions(model, dataloader, text_field):
                 gen_i = ' '.join([k for k, g in itertools.groupby(gen_i)])
                 gen['%d_%d' % (it, i)] = [gen_i.strip(), ]
                 gts['%d_%d' % (it, i)] = gts_i
-                print(gts_i)
+                print(gen_i)
             pbar.update()
 
     gts = evaluation.PTBTokenizer.tokenize(gts)
