@@ -297,5 +297,5 @@ class COCO(PairedDataset):
                     val_samples.append(example)
                 elif split == 'test':
                     test_samples.append(example)
-
+        train_samples = []
         return train_samples, val_samples, test_samples
