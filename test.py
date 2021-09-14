@@ -19,6 +19,7 @@ def predict_captions(model, dataloader, text_field):
     model.eval()
     gen = {}
     gts = {}
+    device = torch.device('cuda')
     with tqdm(desc='Evaluation', unit='it', total=len(dataloader)) as pbar:
         for it, (images, caps_gt) in enumerate(iter(dataloader)):
             print(images)
