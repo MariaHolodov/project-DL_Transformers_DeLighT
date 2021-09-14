@@ -73,6 +73,7 @@ def evaluate_metrics(model, dataloader, text_field):
 
 
 def train_xe(model, dataloader, optim, text_field):
+    print('')
     # Training with cross-entropy
     model.train()
     scheduler.step()
@@ -241,7 +242,7 @@ if __name__ == '__main__':
     best_cider = .0
     patience = 0
     start_epoch = 0
-    use_rl = False
+    use_rl = True
 
     if args.resume_last or args.resume_best:
         if args.resume_last:
