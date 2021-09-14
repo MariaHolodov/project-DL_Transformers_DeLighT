@@ -62,7 +62,7 @@ class Dataset(object):
 
         if len(data) == 1:
             data = data[0]
-        return data
+        return data, example
 
     def __len__(self):
         return len(self.examples)
