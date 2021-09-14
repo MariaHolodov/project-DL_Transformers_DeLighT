@@ -47,6 +47,8 @@ if __name__ == '__main__':
     parser.add_argument('--workers', type=int, default=0)
     parser.add_argument('--features_path', type=str)
     parser.add_argument('--annotation_folder', type=str)
+    parser.add_argument('--model_path', type=str)
+
     args = parser.parse_args()
 
     print('Meshed-Memory Transformer Evaluation')
@@ -69,7 +71,7 @@ if __name__ == '__main__':
     decoder = MeshedDecoder(len(text_field.vocab), 54, 3, text_field.vocab.stoi['<pad>'])
     model = Transformer(text_field.vocab.stoi['<bos>'], encoder, decoder).to(device)
 
-    data = torch.load('meshed_memory_transformer.pth')
+    data = torch.load(args.model_path)
     model.load_state_dict(data['state_dict'])
 
     dict_dataset_test = test_dataset.image_dictionary({'image': image_field, 'text': RawField()})
