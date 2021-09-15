@@ -66,7 +66,7 @@ if __name__ == '__main__':
     cider_train = Cider(PTBTokenizer.tokenize(ref_caps_train))
     dict_dataset_val = val_dataset.image_dictionary({'image': image_field, 'text': RawField()})
     dict_dataset_test = test_dataset.image_dictionary({'image': image_field, 'text': RawField()})
-
+    print(len(dict_dataset_test))
     dict_dataloader_test = DataLoader(dict_dataset_test, batch_size=args.batch_size // 5)
 
     predict_captions(model, dict_dataloader_test, text_field)
