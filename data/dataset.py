@@ -23,7 +23,7 @@ class Dataset(object):
                 image_ids = [int(example.image.split('_')[-1].split('.')[0]) for example in self.examples]
                 f = h5py.File(features_root, 'r')
                 with tqdm(desc='loading all image ids features', unit='it', total=len(image_ids)) as pbar:
-                    for image_id in image_ids[:1]:#[:5000]:
+                    for image_id in image_ids[:5]:#[:5000]:
                         self.detections_data[image_id] = f['%d_features' % image_id][()]
                         pbar.update()
         else:
@@ -222,7 +222,7 @@ class COCO(PairedDataset):
             ids = {}
             ids['train'] = np.load(os.path.join(id_root, 'coco_train_ids.npy'))
             ids['val'] = np.load(os.path.join(id_root, 'coco_dev_ids.npy'))
-            ids['test'] = np.array(300*[478769])#np.load(os.path.join(id_root, 'coco_test_ids.npy'))
+            ids['test'] = np.array(300*[54335])#np.load(os.path.join(id_root, 'coco_test_ids.npy'))
             if cut_validation:
                 ids['val'] = ids['val'][:200]
                 ids['train'] = ids['train'][:500]
