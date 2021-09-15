@@ -118,6 +118,7 @@ class ImageDetectionsField(RawField):
                 precomp_data = ids_dict[image_id]
             else:
                 print('reading from file!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+                print(image_id)
                 f = h5py.File(self.detections_path, 'r')
                 precomp_data = f['%d_features' % image_id][()]
             precomp_data = np.concatenate([precomp_data,vc_f1],axis=1)
