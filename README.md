@@ -2,7 +2,7 @@
 This repository manly based on M²: Meshed-Memory Transformer code from the paper _[Meshed-Memory Transformer for Image Captioning](https://arxiv.org/abs/1912.08226)_ (CVPR 2020), full report of the improvments and additions made in our project can be found in 'report.pdf'.
 
 ## Environment setup
-Clone the repository and create the `m2release` conda environment using the `environment.yml` file:
+Clone the repository and create the `m2release` conda environment using the `environment.yml` file: FullReport.pdf
 ```
 conda env create -f environment.yml
 conda activate m2release
